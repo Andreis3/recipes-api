@@ -11,4 +11,11 @@ services:
     ports:
       - "27017:27017"
 
-
+  redis:
+    image: redis:6.0
+    container_name: redis
+    volumes:
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+    restart: always
+    ports:
+      - "6379:6379"
