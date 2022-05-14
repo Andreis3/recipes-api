@@ -3,13 +3,15 @@ package utils
 import "github.com/spf13/viper"
 
 type Config struct {
-	Port            string `mapstructure:"PORT"`
-	MongoURI        string `mapstructure:"MONGO_URI"`
-	MongoDB         string `mapstructure:"MONGO_DB"`
-	MongoCollection string `mapstructure:"MONGO_COLLECTION"`
-	RedisURI        string `mapstructure:"REDIS_URI"`
-	RedisPassword   string `mapstructure:"REDIS_PASSWORD"`
-	RedisDB         int    `mapstructure:"REDIS_DB"`
+	Port              string `mapstructure:"PORT"`
+	MongoURI          string `mapstructure:"MONGO_URI"`
+	MongoDB           string `mapstructure:"MONGO_DB"`
+	CollectionRecipes string `mapstructure:"COLLECTION_RECIPES"`
+	CollectionUsers   string `mapstructure:"COLLECTION_USERS"`
+	RedisURI          string `mapstructure:"REDIS_URI"`
+	RedisPassword     string `mapstructure:"REDIS_PASSWORD"`
+	RedisDB           int    `mapstructure:"REDIS_DB"`
+	APIKey            string `mapstructure:"X_API_KEY"`
 }
 
 func LoadConfig() (Config, error) {
