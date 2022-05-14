@@ -24,8 +24,6 @@ import (
 	"io/ioutil"
 	"log"
 
-	"github.com/gin-contrib/sessions"
-	redisStore "github.com/gin-contrib/sessions/redis"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
 	"github.com/rs/xid"
@@ -111,9 +109,6 @@ func init() {
 func main() {
 	router := gin.Default()
 
-	store, _ := redisStore.NewStore(10, "tcp", config.RedisURI, config.RedisPassword, []byte("secret"))
-	router.Use(sessions.Sessions("recipes_api", store))
-
 	authorized := router.Group("/")
 	authorized.Use(authHandler.AuthMiddleware())
 	{
@@ -127,7 +122,6 @@ func main() {
 	router.GET("/recipes/search", recipesHandler.SearchRecipesHandler)
 
 	router.POST("/signing", authHandler.SignInHandler)
-	router.POST("/signout", authHandler.SignOutHandler)
 	router.POST("/refresh", authHandler.RefreshHandler)
 
 	port := fmt.Sprintf(":%s", config.Port)
