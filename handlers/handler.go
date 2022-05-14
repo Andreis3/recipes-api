@@ -16,16 +16,18 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 
 	"github.com/andreis3/recipes-api/models"
+	"github.com/andreis3/recipes-api/utils"
 )
 
 type RecipesHandlers struct {
 	collection  *mongo.Collection
 	ctx         context.Context
 	redisClient *redis.Client
+	config      utils.Config
 }
 
-func NewRecipesHandlers(ctx context.Context, collection *mongo.Collection, redisClient *redis.Client) *RecipesHandlers {
-	return &RecipesHandlers{collection: collection, ctx: ctx, redisClient: redisClient}
+func NewRecipesHandlers(ctx context.Context, collection *mongo.Collection, redisClient *redis.Client, config utils.Config) *RecipesHandlers {
+	return &RecipesHandlers{collection: collection, ctx: ctx, redisClient: redisClient, config: config}
 }
 
 // swagger:operation POST /recipes recipes newRecipe

@@ -4,7 +4,7 @@ reload-server:
 compose-down:
 	docker-compose down
 compose-up:
-	docker-compose up -d
+	docker-compose -f docker-compose.yaml up -d
 
 compose-build:
 	docker-compose up -d --build
