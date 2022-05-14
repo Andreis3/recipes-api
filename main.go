@@ -18,6 +18,7 @@ package main
 
 import (
 	"context"
+	"crypto/sha256"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -26,6 +27,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
 	"github.com/rs/xid"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
@@ -35,22 +37,30 @@ import (
 	"github.com/andreis3/recipes-api/utils"
 )
 
+var authHandler *handlers.AuthHandler
 var recipesHandler *handlers.RecipesHandlers
+var err error
 var config utils.Config
 
 func init() {
-	config, err := utils.LoadConfig()
+	config, err = utils.LoadConfig()
 	if err != nil {
 		log.Fatal("cannot load config: ", err)
 	}
 	recipes := make([]models.Recipe, 0)
 	files, _ := ioutil.ReadFile("recipes.json")
-	_ = json.Unmarshal(files, &recipes)
+	json.Unmarshal(files, &recipes)
 
 	var listOfRecipes []any
 	for _, recipe := range recipes {
 		recipe.RecipeID = xid.New().String()
 		listOfRecipes = append(listOfRecipes, recipe)
+	}
+
+	users := map[string]string{
+		"andrei": "123456",
+		"admin":  "123456",
+		"santos": "123456",
 	}
 
 	ctx := context.Background()
@@ -60,15 +70,15 @@ func init() {
 	}
 	log.Println("Connected to MongoDB")
 
-	client.Database(config.MongoDB).Collection(config.MongoCollection).Drop(ctx)
-	collection := client.Database(config.MongoDB).Collection(config.MongoCollection)
+	client.Database(config.MongoDB).Collection(config.CollectionRecipes).Drop(ctx)
+	collectionRecipes := client.Database(config.MongoDB).Collection(config.CollectionRecipes)
 
-	insertManyResult, err := collection.InsertMany(ctx, listOfRecipes)
+	insertManyRecipesResult, err := collectionRecipes.InsertMany(ctx, listOfRecipes)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	log.Println("Inserted recipes", len(insertManyResult.InsertedIDs))
+	log.Println("Inserted recipes", len(insertManyRecipesResult.InsertedIDs))
 
 	redisClient := redis.NewClient(&redis.Options{
 		Addr:     config.RedisURI,
@@ -79,20 +89,40 @@ func init() {
 	status := redisClient.Ping(ctx)
 	log.Println(status)
 
-	recipesHandler = handlers.NewRecipesHandlers(ctx, collection, redisClient)
+	recipesHandler = handlers.NewRecipesHandlers(ctx, collectionRecipes, redisClient, config)
+
+	collectionUsers := client.Database(config.MongoDB).Collection(config.CollectionUsers)
+
+	h := sha256.New()
+
+	client.Database(config.MongoDB).Collection(config.CollectionUsers).Drop(ctx)
+	for username, password := range users {
+		collectionUsers.InsertOne(ctx, bson.M{
+			"username": username,
+			"password": string(h.Sum([]byte(password))),
+		})
+	}
+
+	authHandler = handlers.NewAuthHandler(ctx, collectionUsers)
 }
 
 func main() {
 	router := gin.Default()
 
-	config, _ = utils.LoadConfig()
+	authorized := router.Group("/")
+	authorized.Use(authHandler.AuthMiddleware())
+	{
+		authorized.POST("/recipes", recipesHandler.NewRecipeHandler)
+		authorized.PUT("/recipes/:id", recipesHandler.UpdateRecipeHandler)
+		authorized.DELETE("/recipes/:id", recipesHandler.DeleteRecipeHandler)
+	}
 
-	router.POST("/recipes", recipesHandler.NewRecipeHandler)
 	router.GET("/recipes/:id", recipesHandler.GetRecipeIDHandler)
 	router.GET("/recipes", recipesHandler.ListRecipesHandler)
 	router.GET("/recipes/search", recipesHandler.SearchRecipesHandler)
-	router.PUT("/recipes/:id", recipesHandler.UpdateRecipeHandler)
-	router.DELETE("/recipes/:id", recipesHandler.DeleteRecipeHandler)
+
+	router.POST("/signing", authHandler.SignInHandler)
+	router.POST("/refresh", authHandler.RefreshHandler)
 
 	port := fmt.Sprintf(":%s", config.Port)
 	router.Run(port)
