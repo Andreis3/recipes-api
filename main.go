@@ -88,7 +88,7 @@ func main() {
 	router.GET("/recipes", recipesHandler.ListRecipesHandler)
 	router.GET("/recipes/search", recipesHandler.SearchRecipesHandler)
 
-	router.POST("/signing", authHandler.SignInHandler)
+	router.POST("/signin", authHandler.SignInHandler)
 	router.POST("/signout", authHandler.SignOutHandler)
 	router.POST("/refresh", authHandler.RefreshHandler)
 
