@@ -10,6 +10,8 @@ services:
     restart: always
     ports:
       - "27017:27017"
+    networks:
+      - demo
 
   redis:
     image: redis:6.0
@@ -19,3 +21,26 @@ services:
     restart: always
     ports:
       - "6379:6379"
+    networks:
+      - demo
+
+  prometheus:
+    image: prom/prometheus:v2.27.0
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+    restart: always
+    network_mode: "host"
+
+  grafana:
+    image: grafana/grafana:7.5.6
+    container_name: grafana
+    ports:
+      - 3000:3000
+    restart: always
+    network_mode: "host"
+networks:
+  demo:
+    driver: bridge
