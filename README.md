@@ -64,3 +64,16 @@ make swagger-up # up swagger
 
 Tutorial dashboard
 - [Tutorial](https://www.programmingwithwolfgang.com/create-grafana-dashboards-with-prometheus-metrics/#:~:text=To%20create%20your%20own%20Grafana,and%20then%20select%20Add%20Query.&text=Select%20Prometheus%20as%20your%20data,over%20the%20last%2010%20minutes.)
+
+*create app.env*
+```
+PORT=8080
+MONGO_URI=mongodb://root:root@localhost:27017/test?authSource=admin
+MONGO_DB=demo
+COLLECTION_RECIPES=recipes
+COLLECTION_USERS=users
+REDIS_URI=localhost:6379
+REDIS_PASSWORD=
+REDIS_DB=0
+X_API_KEY=1234560abcdetghig
+```
