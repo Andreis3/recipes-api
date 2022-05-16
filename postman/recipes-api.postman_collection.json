@@ -1,0 +1,275 @@
+{
+	"info": {
+		"_postman_id": "c2033cd1-f1ab-4c70-82bb-41eb243979d3",
+		"name": "recipes-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "recipes",
+			"item": [
+				{
+					"name": "create new recipes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									" let responseJsonData = pm.response.json();",
+									"if (responseJsonData.id){",
+									"    pm.environment.set(\"id\", responseJsonData.id);",
+									"}",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiZXhwIjoxNjUyNTU2MzcwfQ.Buc0U7vEP-_Id93Pf-jfroKkN9hr_ftm8Vr5zpJVi7M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X_API_KEY",
+								"value": "5zCmHrFXBHy9K4RBqiZaNg==",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiZXhwIjoxNjUyMzU3ODA2fQ.5KhSr5SusNGotn-8T-Kbe-lpO5CQsLNsD_pqN_mUDWM",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n        \"name\": \"Oregano Marinated Chicken\",\n        \"tags\": [\n            \"main\",\n            \"chicken\"\n        ],\n        \"ingredients\": [\n            \"4 (6 to 7-ounce) boneless skinless chicken breasts\\r\",\n            \"10 grinds black pepper\\r\",\n            \"1/2 tsp salt\\r\",\n            \"2 tablespoon extra-virgin olive oil\\r\",\n            \"1 teaspoon dried oregano\\r\",\n            \"1 lemon, juiced\"\n        ],\n        \"instructions\": [\n            \"To marinate the chicken: In a non-reactive dish, combine the lemon juice, olive oil, oregano, salt, and pepper and mix together\",\n            \" Add the chicken breasts to the dish and rub both sides in the mixture\",\n            \" Cover the dish with plastic wrap and let marinate in the refrigerator for at least 30 minutes and up to 4 hours\",\n            \"\\r\\n\\r\\nTo cook the chicken: Heat a nonstick skillet or grill pan over high heat\",\n            \" Add the chicken breasts and cook, turning once, until well browned, about 4 to 5 minutes on each side or until cooked through\",\n            \" Let the chicken rest on a cutting board for a few minutes before slicing it into thin strips\"\n        ]\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/recipes",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"recipes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get recipe by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/recipes/{{id}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"recipes",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List recipes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/recipes",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"recipes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update recipes",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "X_API_KEY",
+								"value": "5zCmHrFXBHy9K4RBqiZaNg==",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n        \"name\": \"Oregano Marinated Chicken\",\n        \"tags\": [\n            \"main\"\n        ],\n        \"ingredients\": [\n            \"4 (6 to 7-ounce) boneless skinless chicken breasts\\r\",\n            \"10 grinds black pepper\\r\"\n        ],\n        \"instructions\": []\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/recipes/{{id}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"recipes",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete recipe by id",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X_API_KEY",
+								"value": "5zCmHrFXBHy9K4RBqiZaNg==",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BaseUrl}}/recipes/{{id}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"recipes",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "search recipes by tag",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/recipes/search?tag=vegetarian",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"recipes",
+								"search"
+							],
+							"query": [
+								{
+									"key": "tag",
+									"value": "vegetarian"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "signing",
+			"item": [
+				{
+					"name": "signing",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/signin",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"signin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "refresh",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiZXhwIjoxNjUyMzYwMTA2fQ.2FZjGYgMhY6bD3cENosnpSMNDYux_uRbFZrmBKuTfvY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/refresh",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "signout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/signout",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"signout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "variable_key",
+			"value": ""
+		}
+	]
+}
