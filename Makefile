@@ -1,5 +1,5 @@
 reload-server:
-	gin --appPort 3000 --port 5000 --immediate
+	gin --appPort 8080 --port 5000 --immediate
 
 compose-down:
 	docker-compose down
